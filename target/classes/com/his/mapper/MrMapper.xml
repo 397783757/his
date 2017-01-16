@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.MrMapper" >
+
+    <select id="selectCategoryByCode" resultType="com.his.model.MrCategory" parameterType="java.util.Map">
+        select c.id, c.name, c.type,t.content,t.category_id,t.t_name,t_id
+        from medicalrecord_category c
+        left join medicalrecord_template t on c.id=t.category_id
+        where 1=1
+        <if test="type!=null">
+            AND c.type = #{type,jdbcType=VARCHAR}
+        </if>
+        <if test="code!=null">
+            AND (c.pinyin like concat(concat('%',#{code}),'%')
+            OR c.name like concat(concat('%',#{code}),'%'))
+        </if>
+    </select>
+
+    <select id="selectByType" resultType="com.his.model.MrCategory" parameterType="java.lang.String">
+      select c.id, c.name, c.type,t.content,t.category_id,t.t_name,t_id
+      from medicalrecord_category c
+      left join medicalrecord_template t on c.id=t.category_id
+      where 1=1
+        <if test="_parameter!=null">
+          AND c.type = #{_parameter,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectMrTemplate" resultType="com.his.model.MrCategory" parameterType="java.lang.String">
+      select t_id, t_name, content,category_id
+      from medicalrecord_template
+      where category_id = #{id,jdbcType=VARCHAR}
+   </select>
+
+    <insert id="insertCategory" parameterType="com.his.model.MrCategory"  useGeneratedKeys="true" keyProperty="id">
+        insert into medicalrecord_category ( name, type, pinyin)
+        values (#{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{pinyin,jdbcType=TINYINT})
+    </insert>
+
+    <insert id="insertTemplate" parameterType="com.his.model.MrCategory" >
+        insert into medicalrecord_template ( content, t_name, category_id)
+        values (#{content,jdbcType=VARCHAR}, #{t_name,jdbcType=VARCHAR}, #{category_id,jdbcType=TINYINT})
+    </insert>
+
+    <delete id="deleteCategoryByPrimaryKey" parameterType="java.lang.String" >
+        delete from medicalrecord_category
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteTemplateByPrimaryKey" parameterType="java.lang.String" >
+        delete from medicalrecord_template
+        where t_id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteTemplateByCategory" parameterType="java.lang.String" >
+        delete from medicalrecord_template
+        where category_id = #{id,jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateTemplateByPrimaryKey" parameterType="com.his.model.MrCategory" >
+        update medicalrecord_template
+        set t_name = #{t_name,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        category_id=#{category_id,jdbcType=VARCHAR}
+        where t_id = #{t_id,jdbcType=VARCHAR}
+   </update>
+
+    <update id="updateCategoryByPrimaryKey" parameterType="com.his.model.MrCategory" >
+        update medicalrecord_category
+        set name = #{name,jdbcType=VARCHAR},
+        type = #{type,jdbcType=VARCHAR},
+        pinyin=#{pinyin,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectIcdBylevel" resultType="com.his.model.DiseaseData" parameterType="java.lang.String">
+        select disease_code, disease_name, level
+        from disease_data
+        where father_level = #{_parameter,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectIcdByCode" resultType="com.his.model.DiseaseData" parameterType="java.lang.String">
+        select disease_code, disease_name, level
+        from disease_data
+        where LEVEL ="******"
+        AND (
+        pinyin LIKE concat(concat('%',#{code}),'%')
+        OR disease_name like concat(concat('%',#{code}),'%')
+         OR disease_code like concat(concat('%',#{code}),'%')
+         )
+    </select>
+    
+    <resultMap id="mrMap" type="com.his.model.MedicalRecord">
+    <collection property="icd_diagnosises" ofType="com.his.model.Icd_diagnosis"
+                select="selectIcdDia" column="mr_id">
+    </collection>
+</resultMap>
+
+    <select id="selectIcdDia" resultType="com.his.model.Icd_diagnosis" parameterType="java.lang.String">
+        select * from icd_diagnosis
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+
+    </select>
+
+    <select id="selectIcdMedicalRecord" resultMap="mrMap" >
+        select * from MedicalRecord
+        AND state="draft"
+
+    </select>
+
+    <select id="selectIcdMedicalRecordById" resultMap="mrMap" parameterType="java.lang.String">
+        select * from MedicalRecord
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+        AND state="draft"
+    </select>
+
+    <select id="selectIcdMedicalRecordBypartner_id" resultMap="mrMap" parameterType="java.lang.String">
+        select * from MedicalRecord
+        where partner_id = #{partner_id,jdbcType=VARCHAR}
+        AND state="draft"
+    </select>
+
+    <select id="selectMedicalRecord" resultMap="mrMap" parameterType="java.util.Map">
+        select * from MedicalRecord
+        WHERE state="draft"
+        AND org_code=#{org_code,jdbcType=VARCHAR}
+        <if test="start!=null">
+            limit #{start} , 10
+        </if>
+    </select>
+
+    <select id="selectMedicalRecordByname" resultMap="mrMap" parameterType="java.util.Map">
+        select * from MedicalRecord
+        where 1=1
+        AND state="draft"
+        AND org_code=#{org_code}
+        <if test="partner_name!=null">
+        AND (partner_name LIKE concat(concat('%',#{partner_name}),'%')
+            or pinyin_code  LIKE concat(concat('%',#{partner_name}),'%')
+            or wubi_code  LIKE concat(concat('%',#{partner_name}),'%'))
+        </if>
+        <if test="start!=null">
+        limit #{start} , 10
+        </if>
+    </select>
+
+    <select id="countMedicalRecord" resultType="java.lang.Integer" parameterType="java.util.Map">
+        select COUNT(*) from MedicalRecord
+        where 1=1
+        AND state="draft"
+        AND org_code=#{org_code}
+        <if test="partner_name!=null">
+            AND (partner_name LIKE concat(concat('%',#{partner_name}),'%')
+            or pinyin_code  LIKE concat(concat('%',#{partner_name}),'%')
+            or wubi_code  LIKE concat(concat('%',#{partner_name}),'%'))
+        </if>
+    </select>
+
+    <insert id="insertMedicalRecord" parameterType="com.his.model.MedicalRecord" useGeneratedKeys="true" keyProperty="mr_id">
+        INSERT  into medicalrecord(mr_id,content,partner_id,times,d_time,doctor,sex,street,age,birthday,note2,note1,phone,diagnostic_type
+        ,prescription_type,doctor_advice,allergic_note,main_description,nowill_description,familyill_history,personal_description
+        ,historyill_description,id,state,partner_name,department,pinyin_code,wubi_code,name,org_code,doctor_licence)
+        VALUES (#{mr_id,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR}, #{partner_id,jdbcType=VARCHAR}, #{times,jdbcType=VARCHAR},
+        #{d_time,jdbcType=VARCHAR}, #{doctor,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},#{street,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
+        #{note2,jdbcType=VARCHAR}, #{note1,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},#{diagnostic_type,jdbcType=VARCHAR},
+        #{prescription_type,jdbcType=VARCHAR}, #{doctor_advice,jdbcType=VARCHAR},
+        #{allergic_note,jdbcType=VARCHAR}, #{main_description,jdbcType=VARCHAR}, #{nowill_description,jdbcType=VARCHAR},
+        #{familyill_history,jdbcType=VARCHAR}, #{personal_description,jdbcType=VARCHAR}, #{historyill_description,jdbcType=VARCHAR},
+        #{mr_id,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{partner_name,jdbcType=VARCHAR},#{department,jdbcType=VARCHAR},
+        #{pinyin_code,jdbcType=VARCHAR},#{wubi_code,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR}
+        ,#{org_code,jdbcType=VARCHAR},#{doctor_licence,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="inserticd_diagnosis" parameterType="com.his.model.Icd_diagnosis">
+        INSERT  into icd_diagnosis(doctor_code,disease_code,dia_type,disease_name,mr_id)
+        VALUES (#{doctor_code,jdbcType=VARCHAR}, #{disease_code,jdbcType=VARCHAR}, #{dia_type,jdbcType=VARCHAR},
+        #{disease_name,jdbcType=VARCHAR}, #{mr_id,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="deleteicd_diagnosis" parameterType="java.lang.String" >
+        delete from icd_diagnosis
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deletemedicalrecord" parameterType="java.lang.String" >
+        delete from medicalrecord
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+    </delete>
+
+
+
+    <update id="updateMedicalRecord" parameterType="com.his.model.MrCategory" >
+        update medicalrecord
+        set
+        content = #{content,jdbcType=VARCHAR},
+        partner_id = #{partner_id,jdbcType=VARCHAR},
+        times=#{times,jdbcType=VARCHAR},
+        d_time=#{d_time,jdbcType=VARCHAR},
+        doctor=#{doctor,jdbcType=VARCHAR},
+        sex=#{sex,jdbcType=VARCHAR},
+        street=#{street,jdbcType=VARCHAR},
+        age=#{age,jdbcType=VARCHAR},
+        birthday=#{birthday,jdbcType=VARCHAR},
+        note2=#{note2,jdbcType=VARCHAR},
+        note1=#{note1,jdbcType=VARCHAR},
+        phone=#{phone,jdbcType=VARCHAR},
+        diagnostic_type=#{diagnostic_type,jdbcType=VARCHAR},
+        prescription_type=#{prescription_type,jdbcType=VARCHAR},
+        doctor_advice =#{doctor_advice,jdbcType=VARCHAR},
+        allergic_note=#{allergic_note,jdbcType=VARCHAR},
+        main_description=#{main_description,jdbcType=VARCHAR},
+        nowill_description=#{nowill_description,jdbcType=VARCHAR},
+        familyill_history= #{familyill_history,jdbcType=VARCHAR},
+        personal_description=#{personal_description,jdbcType=VARCHAR},
+        historyill_description=#{historyill_description,jdbcType=VARCHAR},
+        department=#{department,jdbcType=VARCHAR},
+        partner_name =#{partner_name,jdbcType=VARCHAR},
+        org_code =#{org_code,jdbcType=VARCHAR},
+        pinyin_code= #{pinyin_code,jdbcType=VARCHAR},
+        wubi_code=#{wubi_code,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.DrugRemarkMapper" >
+
+    <select id="selectDrugRemark" resultType="com.his.model.DrugRemark">
+        SELECT * FROM Drug_remark
+    </select>
+
+    <delete id="deleteDrugRemark" parameterType="java.lang.String">
+        DELETE from Drug_remark
+        WHERE id=#{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertDrugRemark" parameterType="java.lang.String">
+        INSERT INTO Drug_remark(remark) VALUES (#{remark,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateDrugRemark" parameterType="java.util.Map">
+        UPDATE Drug_remark
+        set,
+        remark=#{remark,jdbcType=VARCHAR}
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>

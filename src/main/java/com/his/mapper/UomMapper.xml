@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.UomMapper" >
+
+    <select id="selectUom" resultType="com.his.model.Uom">
+        SELECT * FROM uom
+    </select>
+
+    <delete id="deleteUom" parameterType="java.lang.Integer">
+        DELETE from uom
+        WHERE id=#{id}
+    </delete>
+
+    <insert id="insertUom" parameterType="com.his.model.Uom">
+        INSERT INTO uom(id,name,type) VALUES (#{id},#{name,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateUom" parameterType="com.his.model.Uom">
+        UPDATE uom
+        set,
+        name = #{name,jdbcType=VARCHAR},
+        type=#{type,jdbcType=VARCHAR}
+        where id=#{id}
+    </update>
+
+</mapper>

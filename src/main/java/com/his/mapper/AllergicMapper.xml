@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.AllergicMapper" >
+
+    <select id="selectAllergic" resultType="com.his.model.Allergic">
+    SELECT * FROM allergic_history
+</select>
+
+    <select id="selectAllergicByCode" resultType="com.his.model.Allergic" parameterType="java.lang.String">
+        SELECT * FROM allergic_history
+        WHERE NAME LIKE concat(concat('%',#{code}),'%')
+        or pinyin_code  LIKE concat(concat('%',#{code}),'%')
+        or wubi_code  LIKE concat(concat('%',#{code}),'%')
+
+    </select>
+
+    <delete id="deleteAllergic" parameterType="java.lang.Integer">
+        DELETE from allergic_history
+        WHERE id=#{id}
+    </delete>
+
+    <insert id="insertAllergic" parameterType="com.his.model.Uom">
+        INSERT INTO allergic_history(id,name,x_pinyin,x_wubi) VALUES (#{id},#{name,jdbcType=VARCHAR},
+        #{x_pinyin,jdbcType=VARCHAR}, #{x_wubi,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateAllergic" parameterType="com.his.model.Uom">
+        UPDATE allergic_history
+        set
+        name = #{name,jdbcType=VARCHAR},
+        x_pinyin=#{x_pinyin,jdbcType=VARCHAR},
+        x_wubi=#{x_wubi,jdbcType=VARCHAR}
+        where id=#{id}
+    </update>
+
+</mapper>

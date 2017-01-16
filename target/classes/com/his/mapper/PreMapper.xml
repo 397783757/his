@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.PreMapper" >
+
+    <resultMap id="preMap" type="com.his.model.Prescription">
+        <collection property="details" ofType="com.his.model.Detail"
+                    select="selectDetail" column="mr_id">
+        </collection>
+    </resultMap>
+    <resultMap id="ptMap" type="com.his.model.PreTemplate">
+        <collection property="details" ofType="com.his.model.Detail"
+                    select="selectTemplateDetail" column="t_id">
+        </collection>
+    </resultMap>
+
+    <select id="selectTemplate" resultMap="ptMap" >
+        select *
+        from prescription_template
+    </select>
+
+    <select id="selectTemplateByDoctor" resultMap="ptMap" parameterType="java.lang.String">
+        select *
+        from prescription_template
+        where d_id=#{d_id}
+    </select>
+
+    <select id="selectTemplateDetail" resultType="com.his.model.Detail" parameterType="java.lang.String">
+        select *from pt_detail
+        where t_id=#{t_id}
+    </select>
+
+    <insert id="insertTemplate" parameterType="com.his.model.PreTemplate" useGeneratedKeys="true" keyProperty="t_id">
+        INSERT  into prescription_template(t_id,t_name,d_id,type,remark)
+        VALUES (#{t_id,jdbcType=VARCHAR}, #{t_name,jdbcType=VARCHAR}, #{d_id,jdbcType=VARCHAR},
+        #{type,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateTemplate" parameterType="com.his.model.PreTemplate">
+         update prescription_template
+        set
+        t_name = #{t_name,jdbcType=VARCHAR},
+        d_id=#{d_id,jdbcType=VARCHAR},
+        type=#{type,jdbcType=VARCHAR},
+        remark=#{remark,jdbcType=VARCHAR}
+        where t_id=#{t_id,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertTemplateDetail" parameterType="com.his.model.Detail">
+        INSERT  into pt_detail(t_id,product_id,standard,dosis,use_level,content_unit,total,day,times,usages,
+        product_uom,product_uom_qty,product_uom_name,groups,content_unit_name,pair,unit_content)
+        VALUES (#{t_id,jdbcType=VARCHAR}, #{product_id,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR},
+        #{dosis,jdbcType=VARCHAR}, #{use_level,jdbcType=VARCHAR}, #{content_unit,jdbcType=VARCHAR}, #{total,jdbcType=VARCHAR},
+        #{day,jdbcType=VARCHAR}, #{times,jdbcType=VARCHAR},#{usages,jdbcType=VARCHAR},
+        #{product_uom,jdbcType=VARCHAR},#{product_uom_qty,jdbcType=VARCHAR},#{product_uom_name,jdbcType=VARCHAR}
+        ,#{groups,jdbcType=VARCHAR},#{content_unit_name,jdbcType=VARCHAR},#{pair,jdbcType=VARCHAR}
+        ,#{unit_content,jdbcType=VARCHAR})
+    </insert>
+    <delete id="deleteTemplateDetail" parameterType="java.lang.String">
+        delete from pt_detail
+        where t_id=#{t_id}
+    </delete>
+    <delete id="deleteTemplate" parameterType="java.lang.String">
+        delete from prescription_template
+        where t_id=#{t_id}
+    </delete>
+    <insert id="insertDetail" parameterType="com.his.model.Detail">
+        INSERT  into prescription_detail(mr_id,product_id,standard,dosis,use_level,content_unit,total,day,times
+        ,product_uom,money,price_unit,remark,stock,usages,product_uom_qty,product_uom_name,groups,content_unit_name
+        ,pair,unit_content)
+        VALUES (#{mr_id,jdbcType=VARCHAR}, #{product_id,jdbcType=VARCHAR}, #{standard,jdbcType=VARCHAR},
+        #{dosis,jdbcType=VARCHAR}, #{use_level,jdbcType=VARCHAR}, #{content_unit,jdbcType=VARCHAR}, #{total,jdbcType=VARCHAR},
+        #{day,jdbcType=VARCHAR}, #{times,jdbcType=VARCHAR},#{product_uom,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, #{price_unit,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR}, #{stock,jdbcType=VARCHAR}, #{usages,jdbcType=VARCHAR}
+        ,#{product_uom_qty,jdbcType=VARCHAR},#{product_uom_name,jdbcType=VARCHAR},#{groups,jdbcType=VARCHAR}
+        ,#{content_unit_name,jdbcType=VARCHAR},#{pair,jdbcType=VARCHAR}
+        ,#{unit_content,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertPrescription" parameterType="com.his.model.Prescription" useGeneratedKeys="true" keyProperty="mr_id">
+        INSERT  into medicalrecord(mr_id,content,partner_id,times,d_time,doctor,sex,street,age,birthday,note2,note1,phone,diagnostic_type
+        ,prescription_type,doctor_advice,allergic_note,main_description,nowill_description,familyill_history,personal_description
+        ,historyill_description,id,state,partner_name,name,org_code,doctor_licence,department)
+        VALUES (#{mr_id,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR}, #{partner_id,jdbcType=VARCHAR}, #{times,jdbcType=VARCHAR},
+        #{d_time,jdbcType=VARCHAR}, #{doctor,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR},#{street,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{birthday,jdbcType=VARCHAR},
+        #{note2,jdbcType=VARCHAR}, #{note1,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},#{diagnostic_type,jdbcType=VARCHAR},
+        #{prescription_type,jdbcType=VARCHAR}, #{doctor_advice,jdbcType=VARCHAR},
+        #{allergic_note,jdbcType=VARCHAR}, #{main_description,jdbcType=VARCHAR}, #{nowill_description,jdbcType=VARCHAR},
+        #{familyill_history,jdbcType=VARCHAR}, #{personal_description,jdbcType=VARCHAR}, #{historyill_description,jdbcType=VARCHAR},
+        #{mr_id,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{partner_name,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR}
+        ,#{org_code,jdbcType=VARCHAR}, #{doctor_licence,jdbcType=VARCHAR}, #{department,jdbcType=VARCHAR})
+    </insert>
+    <update id="updatePrescription" parameterType="com.his.model.Prescription" >
+        update medicalrecord
+        set
+        content = #{content,jdbcType=VARCHAR},
+        partner_id = #{partner_id,jdbcType=VARCHAR},
+        times=#{times,jdbcType=VARCHAR},
+        d_time=#{d_time,jdbcType=VARCHAR},
+        doctor=#{doctor,jdbcType=VARCHAR},
+        sex=#{sex,jdbcType=VARCHAR},
+        street=#{street,jdbcType=VARCHAR},
+        age=#{age,jdbcType=VARCHAR},
+        birthday=#{birthday,jdbcType=VARCHAR},
+        note2=#{note2,jdbcType=VARCHAR},
+        note1=#{note1,jdbcType=VARCHAR},
+        phone=#{phone,jdbcType=VARCHAR},
+        diagnostic_type=#{diagnostic_type,jdbcType=VARCHAR},
+        prescription_type=#{prescription_type,jdbcType=VARCHAR},
+        doctor_advice =#{doctor_advice,jdbcType=VARCHAR},
+        org_code =#{org_code,jdbcType=VARCHAR},
+        allergic_note=#{allergic_note,jdbcType=VARCHAR},
+        main_description=#{main_description,jdbcType=VARCHAR},
+        nowill_description=#{nowill_description,jdbcType=VARCHAR},
+        familyill_history= #{familyill_history,jdbcType=VARCHAR},
+        personal_description=#{personal_description,jdbcType=VARCHAR},
+        historyill_description=#{historyill_description,jdbcType=VARCHAR},
+        partner_name =#{partner_name,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+
+    <select id="selectDetail" resultType="com.his.model.Detail" parameterType="java.lang.String">
+        select * from prescription_detail
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPrescriptionById" resultMap="preMap" parameterType="java.lang.String">
+        select * from MedicalRecord
+        where mr_id = #{mr_id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPrescription" resultMap="preMap" parameterType="java.lang.Integer">
+        select * from MedicalRecord
+        WHERE state="sale"
+        limit #{start} , 10
+    </select>
+    <select id="selectPreType" resultType="com.his.model.PreType">
+        select * from pre_type
+    </select>
+    <select id="selectPrescriptionBypartner_id" resultMap="preMap" parameterType="java.lang.String">
+        select * from MedicalRecord
+        where partner_id = #{partner_id,jdbcType=VARCHAR}
+        AND state="sale"
+    </select>
+
+    <select id="selectPrescriptionByname" resultMap="preMap" parameterType="java.util.Map">
+        select * from MedicalRecord
+        where 1=1
+        AND state="sale"
+        <if test="partner_name!=null">
+            AND partner_name like concat(concat('%',#{partner_name}),'%')
+        </if>
+        <if test="start!=null">
+            limit #{start} , 10
+        </if>
+    </select>
+
+    <select id="countPrescription" resultType="java.lang.Integer" parameterType="java.lang.String">
+    select COUNT(*) from MedicalRecord
+    where 1=1
+    AND state="sale"
+    <if test="_parameter!=null">
+        AND partner_name like concat(concat('%',#{_parameter}),'%')
+    </if>
+    </select>
+
+    <delete id="deleteDetail" parameterType="java.lang.String">
+        delete FROM prescription_detail
+        where mr_id=#{mr_id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deletePrescription" parameterType="java.lang.String">
+        delete FROM prescription_detail
+        where mr_id=#{mr_id,jdbcType=VARCHAR}
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.PatientMapper" >
+
+
+
+    <insert id="insertPatient" parameterType="com.his.model.Patient">
+        insert into patient ( id, age, name,phone,job,street,sex, birthday,card,nation,marriage,linkman,
+              somatoplasm,registrant,pinyin_code,wubi_code,note)
+        values (#{id,jdbcType=VARCHAR}, #{age,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+        #{phone,jdbcType=VARCHAR}, #{job,jdbcType=VARCHAR}, #{street,jdbcType=TINYINT},#{sex,jdbcType=VARCHAR},
+        #{birthday,jdbcType=VARCHAR}, #{card,jdbcType=VARCHAR}, #{nation,jdbcType=VARCHAR},
+        #{marriage,jdbcType=VARCHAR}, #{linkman,jdbcType=VARCHAR}, #{somatoplasm,jdbcType=VARCHAR},
+        #{registrant,jdbcType=VARCHAR}, #{pinyin_code,jdbcType=VARCHAR}, #{wubi_code,jdbcType=VARCHAR},
+        #{note,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updatePatient" parameterType="com.his.model.Patient" >
+        update patient
+        set
+        age = #{age,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        phone=#{phone,jdbcType=VARCHAR},
+        job=#{job,jdbcType=VARCHAR},
+        street=#{street,jdbcType=VARCHAR},
+        sex=#{sex,jdbcType=VARCHAR},
+        birthday=#{birthday,jdbcType=VARCHAR},
+        card=#{card,jdbcType=VARCHAR},
+        nation=#{nation,jdbcType=VARCHAR},
+        marriage=#{marriage,jdbcType=VARCHAR},
+        linkman=#{linkman,jdbcType=VARCHAR},
+        somatoplasm=#{somatoplasm,jdbcType=VARCHAR},
+        registrant=#{registrant,jdbcType=VARCHAR},
+        pinyin_code=#{pinyin_code,jdbcType=VARCHAR},
+        wubi_code =#{wubi_code,jdbcType=VARCHAR},
+        note=#{note,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <insert id="insertPatientLine" parameterType="com.his.model.PatientLine">
+        insert into patient_allergic ( drug_allergic, drug_id, type,recorder,patient_id)
+        values (#{drug_allergic,jdbcType=VARCHAR}, #{drug_id,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
+        #{recorder,jdbcType=VARCHAR}, #{patient_id,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <resultMap id="ptientMap" type="com.his.model.Patient">
+        <id column="id" property="id"/>
+        <collection property="patientLines" ofType="com.his.model.PatientLine"
+                    select="selectPatientLine" column="id">
+        </collection>
+    </resultMap>
+
+    <select id="selectPatientByCode" resultMap="ptientMap" parameterType="java.util.Map">
+        select * from patient
+        WHERE NAME LIKE concat(concat('%',#{code,jdbcType=VARCHAR}),'%')
+        or pinyin_code  LIKE concat(concat('%',#{code,jdbcType=VARCHAR}),'%')
+        or wubi_code  LIKE concat(concat('%',#{code,jdbcType=VARCHAR}),'%')
+        limit #{start} , 10
+    </select>
+
+    <select id="selectPatientByPhone" resultMap="ptientMap" parameterType="java.lang.String">
+        select * from patient
+        WHERE phone LIKE concat(concat('%',#{_parameter,jdbcType=VARCHAR}),'%')
+    </select>
+
+    <select id="selectPatient" resultMap="ptientMap" parameterType="java.lang.Integer">
+        select * from patient
+        limit #{start} , 10
+    </select>
+    <select id="selectPatientById" resultMap="ptientMap" parameterType="java.lang.Integer">
+        select * from patient
+        where id=#{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectPatientLine" resultType="com.his.model.PatientLine" parameterType="java.lang.Integer">
+        select * from patient_allergic
+        WHERE patient_id=#{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        select COUNT(*) from patient
+        WHERE 1=1
+        <if test="_parameter!=null">
+        AND (NAME LIKE concat(concat('%',#{_parameter,jdbcType=VARCHAR}),'%')
+        or pinyin_code  LIKE concat(concat('%',#{_parameter,jdbcType=VARCHAR}),'%')
+        or wubi_code  LIKE concat(concat('%',#{_parameter,jdbcType=VARCHAR}),'%'))
+        </if>
+    </select>
+
+
+    <delete id="deletePatient" parameterType="java.lang.Integer">
+        DELETE from patient
+        where id=#{id}
+    </delete>
+    <delete id="deletePatientLine" parameterType="java.lang.Integer">
+        DELETE from patient_allergic
+        where patient_id=#{patient_id}
+    </delete>
+</mapper>

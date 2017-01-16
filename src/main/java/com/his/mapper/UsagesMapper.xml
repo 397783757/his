@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.UsagesMapper" >
+
+    <select id="selectDrugUsageByType" resultType="com.his.model.DrugUsage" parameterType="java.lang.String" >
+        SELECT * FROM Drug_Usage
+        where type=#{type}
+    </select>
+
+    <select id="selectDrugUsageByName" resultType="com.his.model.DrugUsage" parameterType="java.lang.String">
+        SELECT * FROM Drug_Usage
+        WHERE see LIKE concat(concat('%',#{name}),'%')
+        or remark LIKE concat(concat('%',#{name}),'%'）
+    </select>
+
+    <delete id="deleteDrugUsage" parameterType="java.lang.String">
+        DELETE from Drug_Usage
+        WHERE id=#{id}
+    </delete>
+
+    <insert id="insertDrugUsage" parameterType="com.his.model.Uom">
+        INSERT INTO Drug_Usage(id,see,type,remark) VALUES (#{id},#{see,jdbcType=VARCHAR},#{type,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateDrugUsage" parameterType="com.his.model.Uom">
+        UPDATE Drug_Usage
+        set,
+        name = #{name,jdbcType=VARCHAR},
+        type=#{type,jdbcType=VARCHAR},
+        see=#{see,jdbcType=VARCHAR}
+        where id=#{id}
+    </update>
+
+    <select id="selectSeq" resultType="java.lang.Integer">
+        select _nextval('userid')
+    </select>
+
+</mapper>

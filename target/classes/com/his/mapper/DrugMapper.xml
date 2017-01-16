@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.his.mapper.DrugMapper" >
+
+
+
+    <insert id="insertDrug" parameterType="com.his.model.Drug">
+        insert into drug ( id, code, name,prin,pinyin_code,standard,bar_code, big_unit_name,big_unit,drug_type,address,drug_spec,source,
+              custom_code,small_unit_name,small_unit,ratio,wubi_code,note,big_price,bbuy_price,sbuy_price,medicine_type
+              ,charge_classification,drug_classification,c_charge_classification,use_level,times,days,license_number,
+              manufacturer,brand,drug_category,minchen,allergic_history,drip,social_security,internal,surgery,gynaecology,recovered,
+              recent_medicine,new_medicine,stock_medicine,new_medicine_text,recent_medicine_text,stock_medicine_text,drug_content,
+              star_date,usages,organization_code,small_price,content_unit,content_unit_name,stop,unit_content)
+        values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+        #{prin,jdbcType=VARCHAR}, #{pinyin_code,jdbcType=VARCHAR}, #{standard,jdbcType=TINYINT},#{bar_code,jdbcType=VARCHAR},
+        #{big_unit_name,jdbcType=VARCHAR}, #{big_unit,jdbcType=VARCHAR}, #{drug_type,jdbcType=VARCHAR},
+        #{address,jdbcType=VARCHAR}, #{drug_spec,jdbcType=VARCHAR}, #{source,jdbcType=VARCHAR},
+        #{custom_code,jdbcType=VARCHAR}, #{small_unit_name,jdbcType=VARCHAR}, #{small_unit,jdbcType=VARCHAR},
+        #{ratio,jdbcType=VARCHAR},  #{wubi_code,jdbcType=VARCHAR},
+        #{note,jdbcType=VARCHAR}, #{big_price,jdbcType=VARCHAR}, #{bbuy_price,jdbcType=VARCHAR},
+        #{sbuy_price,jdbcType=VARCHAR}, #{medicine_type,jdbcType=VARCHAR}, #{charge_classification,jdbcType=VARCHAR},
+        #{drug_classification,jdbcType=VARCHAR}, #{c_charge_classification,jdbcType=VARCHAR}, #{use_level,jdbcType=VARCHAR},
+         #{times,jdbcType=VARCHAR}, #{days,jdbcType=VARCHAR},#{license_number,jdbcType=VARCHAR}, #{manufacturer,jdbcType=VARCHAR},
+        #{brand,jdbcType=VARCHAR}, #{drug_category,jdbcType=VARCHAR}, #{minchen,jdbcType=VARCHAR},
+        #{allergic_history,jdbcType=VARCHAR},#{drip,jdbcType=VARCHAR}, #{social_security} , #{internal,jdbcType=VARCHAR},#{surgery,jdbcType=VARCHAR},
+         #{gynaecology,jdbcType=VARCHAR}, #{recovered,jdbcType=VARCHAR}, #{recent_medicine,jdbcType=VARCHAR},
+        #{new_medicine,jdbcType=VARCHAR}, #{stock_medicine,jdbcType=VARCHAR}, #{new_medicine_text,jdbcType=VARCHAR},
+        #{recent_medicine_text,jdbcType=VARCHAR}, #{stock_medicine_text,jdbcType=VARCHAR}, #{drug_content,jdbcType=VARCHAR},
+         #{star_date,jdbcType=VARCHAR},#{usages,jdbcType=VARCHAR},#{organization_code,jdbcType=VARCHAR}
+         ,#{small_price,jdbcType=VARCHAR},#{content_unit,jdbcType=VARCHAR},#{content_unit_name,jdbcType=VARCHAR},
+         #{stop,jdbcType=VARCHAR},#{unit_content,jdbcType=VARCHAR}
+        )
+    </insert>
+    <update id="updateDrug" parameterType="com.his.model.Drug" >
+        update drug
+        set
+        code = #{code,jdbcType=VARCHAR},
+        name = #{name,jdbcType=VARCHAR},
+        prin=#{prin,jdbcType=VARCHAR},
+        pinyin_code=#{pinyin_code,jdbcType=VARCHAR},
+        standard=#{standard,jdbcType=VARCHAR},
+        bar_code=#{bar_code,jdbcType=VARCHAR},
+        big_unit_name=#{big_unit_name,jdbcType=VARCHAR},
+        big_unit=#{big_unit,jdbcType=VARCHAR},
+        drug_type=#{drug_type,jdbcType=VARCHAR},
+        custom_code=#{custom_code,jdbcType=VARCHAR},
+        small_unit_name=#{small_unit_name,jdbcType=VARCHAR},
+        small_unit=#{small_unit,jdbcType=VARCHAR},
+        ratio=#{ratio,jdbcType=VARCHAR},
+        wubi_code=#{wubi_code,jdbcType=VARCHAR},
+        note =#{note,jdbcType=VARCHAR},
+        big_price=#{big_price,jdbcType=VARCHAR},
+        bbuy_price=#{bbuy_price,jdbcType=VARCHAR},
+        sbuy_price=#{sbuy_price,jdbcType=VARCHAR},
+        medicine_type= #{medicine_type,jdbcType=VARCHAR},
+        charge_classification= #{charge_classification,jdbcType=VARCHAR},
+        drug_classification=#{drug_classification,jdbcType=VARCHAR},
+        c_charge_classification=#{c_charge_classification,jdbcType=VARCHAR},
+        use_level=#{use_level,jdbcType=VARCHAR},KEY
+         times=#{times,jdbcType=VARCHAR},
+        days=#{days,jdbcType=VARCHAR},
+        license_number=#{license_number,jdbcType=VARCHAR},
+        manufacturer=#{manufacturer,jdbcType=VARCHAR},
+        brand=#{brand,jdbcType=VARCHAR},
+        drug_category=#{drug_category,jdbcType=VARCHAR},
+        minchen=#{minchen,jdbcType=VARCHAR},
+        allergic_history=#{allergic_history,jdbcType=VARCHAR},
+        drip=#{drip,jdbcType=VARCHAR},
+        social_security =#{social_security,jdbcType=VARCHAR},
+        internal=#{internal,jdbcType=VARCHAR},
+        surgery=#{surgery,jdbcType=VARCHAR},
+        gynaecology=#{gynaecology,jdbcType=VARCHAR},
+        recovered= #{recovered,jdbcType=VARCHAR},
+        recent_medicine= #{recent_medicine,jdbcType=VARCHAR},
+        new_medicine=#{new_medicine,jdbcType=VARCHAR},
+        stock_medicine=#{stock_medicine,jdbcType=VARCHAR},
+        new_medicine_text=#{new_medicine_text,jdbcType=VARCHAR},
+        recent_medicine_text= #{recent_medicine_text,jdbcType=VARCHAR},
+        stock_medicine_text= #{stock_medicine_text,jdbcType=VARCHAR},
+        drug_content=#{drug_content,jdbcType=VARCHAR},
+        star_date=#{star_date,jdbcType=VARCHAR},
+        usages=#{usages,jdbcType=VARCHAR},
+        organization_code=#{organization_code,jdbcType=VARCHAR},
+        small_price=#{small_price,jdbcType=VARCHAR},
+        content_unit=#{content_unit,jdbcType=VARCHAR},
+         content_unit_name=#{content_unit_name,jdbcType=VARCHAR},
+         unit_content=#{unit_content,jdbcType=VARCHAR},
+         stop=#{stop,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectDrug_usage" resultType="com.his.model.DrugUsage" parameterType="java.lang.String">
+        select * from drug_usage
+        where type=#{type,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteAllDrug">
+        DELETE from drug where 1=1
+    </delete>
+    <select id="selectDrugById" resultType="com.his.model.Drug" parameterType="java.lang.String">
+        select * from drug
+        where id=#{id,jdbcType=VARCHAR}
+    </select>
+
+
+
+</mapper>
